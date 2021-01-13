@@ -11,7 +11,8 @@ async function main() {
   canvas.height = height;
   const ctx = canvas.getContext("2d");
 
-  draw_wasm(instance, ctx, width, height)
+  const image = init_draw_wasm(instance, width, height)
+  draw_wasm(instance, ctx, image)
 
   // JS implementation using fillRect
   const canvas2 = document.getElementById("demo-canvas-2");
@@ -22,7 +23,11 @@ async function main() {
   draw_js(ctx2, width, height)
 }
 
-function draw_wasm(instance, ctx, width, height) {
+// called only once
+// ImageData is a live view to the underlying Uint8ClampedArray,
+// and Uint8ClampedArray is a live view to the underlying ArrayBuffer,
+// which is exported by the wasm as a memory instance.
+function init_draw_wasm(instance, width, height) {
   const buffer_address = instance.exports.BUFFER.value; // here
   const image = new ImageData(
       new Uint8ClampedArray(
@@ -32,9 +37,13 @@ function draw_wasm(instance, ctx, width, height) {
       ),
       width,
   );
+  return image
+}
 
+// can be called for each frame
+// the wasm changes the memory and then canvas needs to be updated
+function draw_wasm(instance, ctx, image) {
   instance.exports.go(); // here
-
   ctx.putImageData(image, 0, 0);
 }
 
