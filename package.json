@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "clean": "shx rm -rf dist && shx mkdir -p dist",
+    "build.wat": "npm run build && wasm2wat dist/graphics.wasm -o dist/graphics.wat",
+    "build.emcc": "emcc graphics.c -o dist/graphics.wasm  -O3 -s EXPORT_ALL=1 -s EXPORTED_FUNCTIONS=\"['_go', '_BUFFER']\" --no-entry",
+    "build.asmjs": "emcc graphics.c -o dist/graphics.js -s WASM=0  -O3 -s EXPORT_ALL=1 -s EXPORTED_FUNCTIONS=\"['_go', '_BUFFER']\" --no-entry",
+    "build.clang": "clang graphics.c -o dist/graphics.wasm  -O3 --target=wasm32 -nostdlib -Wl,--no-entry -Wl,--export-all",
+    "build": "npm run build.emcc",
+    "build.clean": "npm run clean && npm run build",
+    "serve": "light-server --serve . --open"
+  },
+  "devDependencies": {
+    "light-server": "^2.9.1",
+    "shx": "^0.3.3"
+  }
+}
