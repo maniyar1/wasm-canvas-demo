@@ -6,22 +6,27 @@ async function main() {
   const height = 600;
 
   // WASM implementation
-  const canvas = document.getElementById("demo-canvas");
+  const [canvas, ctx] = get_canvas("demo-canvas")
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext("2d");
 
   const image = init_draw_wasm(instance, width, height)
   draw_wasm(instance, ctx, image)
 
   // JS implementation using fillRect
-  const canvas2 = document.getElementById("demo-canvas-2");
-  canvas2.width = width
-  canvas2.height = height
-  const ctx2 = canvas2.getContext("2d")
+  const [canvas2, ctx2] = get_canvas("demo-canvas-2")
+  canvas2.width = width;
+  canvas2.height = height;
 
   draw_js(ctx2, width, height)
 }
+
+function get_canvas(id) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext("2d");
+  return [canvas, ctx]
+}
+
 
 // called only once
 // ImageData is a live view to the underlying Uint8ClampedArray,
