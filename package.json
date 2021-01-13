@@ -1,6 +1,7 @@
 {
   "scripts": {
     "clean": "shx rm -rf dist && shx mkdir -p dist",
+    "build.decompile": "npm run build && wasm-decompile dist/graphics.wasm -o dist/graphics.c",
     "build.wat": "npm run build && wasm2wat dist/graphics.wasm -o dist/graphics.wat",
     "build.emcc": "emcc graphics.c -o dist/graphics.wasm  -O3 -s EXPORT_ALL=1 -s EXPORTED_FUNCTIONS=\"['_go', '_BUFFER']\" --no-entry",
     "build.asmjs": "emcc graphics.c -o dist/graphics.js -s WASM=0  -O3 -s EXPORT_ALL=1 -s EXPORTED_FUNCTIONS=\"['_go', '_BUFFER']\" --no-entry",
